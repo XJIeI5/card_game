@@ -29,6 +29,9 @@ func handleRegistNewUser(u *users.User, data json_mux.TemplateRequest) error {
 
 func handleStartNewGame(u *users.User, data json_mux.TemplateRequest) error {
 	users.StartGame()
+	// player := users.GetPlayer(u)
+	// player.Hand
+	// TODO: отправка клиенту данных о его картах
 	return nil
 }
 
