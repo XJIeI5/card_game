@@ -41,7 +41,7 @@ func (u *User) RespondeError(err string) {
 	responce["type"] = "error"
 	responce["msg"] = err
 	if data, err := json.Marshal(responce); err == nil {
-		fmt.Fprint(u.connection, data)
+		fmt.Fprint(u.connection, string(data))
 		return
 	}
 	panic("the json is incorrectly compiled")
