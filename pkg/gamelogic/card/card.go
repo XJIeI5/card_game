@@ -15,8 +15,8 @@ const (
 
 type Property struct {
 	propertyType  PropertyType
-	title         string
-	description   string
-	foodAmount    int
 	canBeMultiple bool
+	Title         string
+	Description   string
+	FoodAmount    int
 }
