@@ -1,55 +1,76 @@
 package users
 
 import (
+	"fmt"
+	"log"
 	"net"
+	"sync"
 
 	"github.com/XJIeI5/card_game/pkg/gamelogic/card"
 	"github.com/XJIeI5/card_game/pkg/gamelogic/game"
 	"github.com/XJIeI5/card_game/pkg/gamelogic/player"
 )
 
-var (
-	counter     int
-	users       map[int]*User          = make(map[int]*User)
-	players     map[int]*player.Player = make(map[int]*player.Player)
-	gameSession *game.Game             = nil
-	listener    UserListener           = func(u *User) { panic("listener is not set") }
-)
+var players_list []*player.Player = make([]*player.Player, 0)
 
-func SetListenerForUsers(newListener UserListener) {
-	listener = newListener
+type Session struct {
+	mu          sync.Mutex
+	userCounter int
+	users       map[int]*User
+	GameSession *game.Game
 }
 
-func CreateUser(conn net.Conn) {
-	if gameSession != nil {
+func NewSession() *Session {
+	return &Session{
+		users: make(map[int]*User),
+	}
+}
+
+func (s *Session) CreateUser(conn net.Conn, handler ErrorHandler) {
+	if s.GameSession != nil {
 		conn.Write([]byte("error: game already starts"))
 		return
 	}
+
+	newPlayer := player.New(
+		fmt.Sprintf("Guest%d", s.userCounter),
+		card.GetStandartDeck(),
+	)
 	user := &User{
-		id:         counter,
+		id:         s.userCounter,
 		connection: conn,
-		listener:   listener,
+		session:    s,
+		player:     newPlayer,
+		json_mutex: GetStandartJsonMux(handler),
 	}
-	users[counter] = user
-	counter++
+	players_list = append(players_list, newPlayer)
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.users[s.userCounter] = user
+	log.Printf("Created user %d\n", s.userCounter)
+	s.userCounter++
 	go user.listen()
 }
 
-func StartGame() {
-	if gameSession != nil {
-		for _, u := range users {
+func (s *Session) StartGame() {
+	if s.GameSession != nil {
+		for _, u := range s.users {
 			u.RespondeError("game already starts")
 		}
 		return
 	}
-	players_list := make([]*player.Player, len(users))
-	for i, user := range users {
-		players[i] = player.New(user.name, card.GetStandartDeck())
-	}
-	gameSession = game.New(players_list)
-	go gameSession.Run()
+	s.GameSession = game.New(players_list)
 }
 
-func GetPlayer(u *User) *player.Player {
-	return players[u.id]
+func (s *Session) Quit(index int) error {
+	if _, ok := s.users[index]; !ok {
+		return fmt.Errorf("error: no such user in this session")
+	}
+	s.users[index].connection.Close()
+	delete(s.users, index)
+	s.userCounter--
+	log.Printf("User %d quit", index)
+	return nil
 }
