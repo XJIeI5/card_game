@@ -10,19 +10,20 @@ class ResponceHandler(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class EchoInStdoutHandler(ResponceHandler):
+class MessageHandler(ResponceHandler):
     def handle(self, data):
         print('Data received from server: \n===========\n{}\n===========\n'.format(data), flush=True)
 
 
 class SetHandHandler(ResponceHandler):
     def handle(self, data):
-        EchoInStdoutHandler(self.client).handle(data)
+        MessageHandler(self.client).handle(data)
 
 
 class ResponceHandlerFactory:
-    _types = {"message": EchoInStdoutHandler,
-              "set_hand": SetHandHandler}
+    _types = {"message": MessageHandler,
+              "set_hand": SetHandHandler,
+              "error": MessageHandler}
 
     @classmethod
     def get_handler(cls, responce_type: str):
