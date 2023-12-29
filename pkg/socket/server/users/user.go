@@ -28,7 +28,6 @@ func (u *User) listen() {
 		if err != nil {
 			u.RespondeError("error: can't read from connection")
 		}
-		u.RespondeMessage(string(buf[:n]))
 		if err := json.Unmarshal(buf[:n], &data); err != nil {
 			u.RespondeError("undefiend responce")
 			u.session.Quit(u.id)
@@ -44,27 +43,34 @@ func (u *User) SetName(name string) {
 	u.player.Name = name
 }
 
+func (u *User) Name() string {
+	return u.name
+}
+
 func (u *User) RespondeMessage(msg string) {
 	body := make(map[string]string)
 	body["name"] = u.name
-	body["msg"] = msg
+	body["text"] = msg
 
-	responce := make(map[string]interface{})
-	responce["type"] = "message"
-	responce["body"] = body
-	byteArr, _ := json.Marshal(responce)
-	u.RespondeByteArray(byteArr)
+	u.RespondeStatement("message", body)
 }
 
 func (u *User) RespondeError(err string) {
-	responce := make(map[string]string)
-	responce["type"] = "error"
-	responce["msg"] = err
-	if data, err := json.Marshal(responce); err == nil {
-		fmt.Fprint(u.connection, string(data))
-		return
+	body := make(map[string]string)
+	body["error"] = err
+
+	u.RespondeStatement("error", body)
+}
+
+func (u *User) RespondeStatement(msgType string, body map[string]string) {
+	responce := make(map[string]interface{})
+	responce["type"] = msgType
+	responce["body"] = body
+	byteArr, err := json.Marshal(responce)
+	if err != nil {
+		panic("incorrect formed json")
 	}
-	panic("the json is incorrectly compiled")
+	u.RespondeByteArray(byteArr)
 }
 
 func (u *User) RespondeByteArray(msg []byte) {
