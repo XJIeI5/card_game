@@ -1,5 +1,7 @@
 package card
 
+import "fmt"
+
 type Deck []*Card
 
 func NewDeck() Deck {
@@ -7,6 +9,9 @@ func NewDeck() Deck {
 }
 
 func (d *Deck) Remove(index int) error {
+	if index >= len(*d) || index < 0 {
+		return fmt.Errorf("incorrect index")
+	}
 	*d = append((*d)[:index], (*d)[index+1:]...)
 	return nil
 }
