@@ -6,8 +6,11 @@ import (
 )
 
 const (
-	EventPlayCard   = "playcard"
-	EventPlayerPass = "playerpass"
+	EventPlayCard        = "playcard"
+	EventCardCanBePlayed = "canplaycard"
+	EventPlayerPass      = "playerpass"
+	EventFeedFromSupply  = "feedsupply"
+	EventCreatureIsFed   = "creatureisfed"
 )
 
 var SharedEvents = BellState{bell.New()}
@@ -23,8 +26,9 @@ func (b *BellState) Reset() {
 type PlayCardConfig struct {
 	CardIndex      int
 	AsCreature     bool
-	Property       *card.Property
+	Property       card.IProperty
 	PeekedCreature *int
+	PairedCreature *int
 }
 
 type PlayCardResult struct {
@@ -40,10 +44,23 @@ func (c *PlayCardResult) Config() PlayCardConfig {
 	return c.cfg
 }
 
-type PassConfig struct {
+type PassResult struct {
 	player *Player
 }
 
-func (c *PassConfig) Player() *Player {
-	return c.player
+func (p *PassResult) Player() *Player {
+	return p.player
+}
+
+type FeedFromSupplyResult struct {
+	player   *Player
+	creature *card.Creature
+}
+
+func (f *FeedFromSupplyResult) Player() *Player {
+	return f.player
+}
+
+func (f *FeedFromSupplyResult) Creature() *card.Creature {
+	return f.creature
 }
