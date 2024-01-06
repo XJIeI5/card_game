@@ -17,34 +17,18 @@ func (d *Deck) Remove(index int) error {
 }
 
 func GetStandartDeck() Deck {
-	sharpEyesight := Property{
-		propertyType:  Access,
-		Title:         "Острое зрение",
-		Description:   "Далеко видит",
-		FoodAmount:    0,
-		canBeMultiple: false,
-	}
-
-	fatReserve := Property{
-		propertyType:  FoodSave,
-		Title:         "Жировой запас",
-		Description:   "Может запасать еду",
-		FoodAmount:    0,
-		canBeMultiple: true,
-	}
-
 	cards := []*Card{
 		{
-			Property:       sharpEyesight,
+			Property:       newSharpVision(),
 			SecondProperty: nil,
 		},
 		{
-			Property:       fatReserve,
+			Property:       newFatTissue(),
 			SecondProperty: nil,
 		},
 		{
-			Property:       sharpEyesight,
-			SecondProperty: &fatReserve,
+			Property:       newSharpVision(),
+			SecondProperty: newFatTissue(),
 		},
 	}
 
