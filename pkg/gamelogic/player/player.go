@@ -14,14 +14,13 @@ type Player struct {
 
 	creatures []*card.Creature
 	err       error
-	isPassed  bool
 }
 
 func New(name string, cards card.Deck) *Player {
 	player := &Player{
-		Name: name,
-		Hand: cards,
-		// Events: bell.New(),
+		Name:   name,
+		Hand:   cards,
+		Events: bell.New(),
 	}
 	player.creatures = make([]*card.Creature, 0)
 	return player
@@ -36,12 +35,11 @@ func (p *Player) AddError(err error) {
 }
 
 func (p *Player) Pass() {
-	p.isPassed = true
-	SharedEvents.Ring(EventPlayerPass, PassConfig{player: p})
+	SharedEvents.Ring(EventPlayerPass, PassResult{player: p})
 }
 
-func (p *Player) IsPassed() bool {
-	return p.isPassed
+func (p *Player) PeekCard(cfg PlayCardConfig) {
+	p.emitPlayCardEvent(cfg)
 }
 
 func (p *Player) PlayCard(cfg PlayCardConfig) {
@@ -54,7 +52,7 @@ func (p *Player) PlayCard(cfg PlayCardConfig) {
 	if err != nil {
 		return
 	}
-	p.emitPlayCardEvent(cfg)
+
 }
 
 func (p *Player) emitPlayCardEvent(cfg PlayCardConfig) {
@@ -81,7 +79,7 @@ func (p *Player) addCreature() {
 	p.creatures = append(p.creatures, card.NewCreature())
 }
 
-func (p *Player) addProperty(peekedCreature int, prop *card.Property) error {
+func (p *Player) addProperty(peekedCreature int, prop card.IProperty) error {
 	creature := p.creatures[peekedCreature]
 	return creature.ApplyProperty(prop)
 }
