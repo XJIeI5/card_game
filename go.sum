@@ -1,2 +1,12 @@
+github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/nuttech/bell v1.0.0 h1:vT+yZPxKEu6d5q2UMWfaMtRyGJjkYFeEylN9cNuYpPo=
+github.com/nuttech/bell v1.0.0/go.mod h1:4UXLqnMyVytDafGOeh9Zu5CYy3gkBUv3r8aPW4NxxV0=
+github.com/nuttech/bell/v2 v2.2.0 h1:SN6JM6e3c/Zt9vNNsN7RCi3wZrwWCF4n35M9ki1rnvU=
+github.com/nuttech/bell/v2 v2.2.0/go.mod h1:yGwwWBy2+c5/5XlykE8IkHWAqd7sfMEG4c803kpUdQY=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
+github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/sylpheeed/go-tcp-socket-chat v0.0.0-20160209200605-ae0e8bb37127 h1:O7+s3mSj6EWc+yU1TpTfggBbomvw4ZzZxupX9vZ5JgY=
 github.com/sylpheeed/go-tcp-socket-chat v0.0.0-20160209200605-ae0e8bb37127/go.mod h1:eNR0VW3rfoQNfsN6bdrlVXtkUUiHWAxt6/0otaMaNtk=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
