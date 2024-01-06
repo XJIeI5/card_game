@@ -3,6 +3,7 @@ package users
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/XJIeI5/card_game/pkg/gamelogic/card"
 )
@@ -27,6 +28,7 @@ func handleRegistNewUser(u *User, data TemplateRequest) error {
 }
 
 func handleStartNewGame(u *User, data TemplateRequest) error {
+	log.Print("game starts")
 	u.session.StartGame()
 
 	player := u.player
@@ -48,6 +50,10 @@ func handleStartNewGame(u *User, data TemplateRequest) error {
 }
 
 func handleCardPlay(u *User, data TemplateRequest) error {
+	if u.session.GameSession.CurrentPlayer() != u.player {
+		return fmt.Errorf("you can't play card now")
+	}
+
 	cardIndexValue, ok := data.Body["card_index"].(float64)
 	if !ok {
 		return fmt.Errorf("body hasn't card index field")
